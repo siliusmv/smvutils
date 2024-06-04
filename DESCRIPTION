@@ -13,3 +13,5 @@ Suggests:
     scales,
     future,
     tikzDevice
+Imports: 
+    lobstr
