@@ -14,4 +14,5 @@ Suggests:
     future,
     tikzDevice
 Imports: 
-    lobstr
+    lobstr,
+    progress

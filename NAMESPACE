@@ -3,6 +3,8 @@
 export(smv_get_remote_func)
 export(smv_ggplot_discrete_cols)
 export(smv_plot_tikz)
+export(smv_progress_bar)
+export(smv_quiet)
 export(smv_remote)
 export(smv_run)
 export(smv_size)
