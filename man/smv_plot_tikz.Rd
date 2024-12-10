@@ -5,7 +5,14 @@
 \title{Turn an R plot into a beautiful pdf made by LaTeX and TikZ,
 using the tikzDevice package}
 \usage{
-smv_plot_tikz(plot = NULL, expression = NULL, file = "Rplots.pdf", ...)
+smv_plot_tikz(
+  plot = NULL,
+  expression = NULL,
+  file = "Rplots.pdf",
+  extra_packages = NULL,
+  tex_engine = c("pdflatex", "lualatex"),
+  ...
+)
 }
 \description{
 Turn an R plot into a beautiful pdf made by LaTeX and TikZ,

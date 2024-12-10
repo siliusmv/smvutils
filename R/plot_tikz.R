@@ -1,7 +1,12 @@
 #' Turn an R plot into a beautiful pdf made by LaTeX and TikZ,
 #' using the tikzDevice package
 #' @export
-smv_plot_tikz = function(plot = NULL, expression = NULL, file = "Rplots.pdf", ...) {
+smv_plot_tikz = function(plot = NULL,
+                         expression = NULL,
+                         file = "Rplots.pdf",
+                         extra_packages = NULL,
+                         tex_engine = c("pdflatex", "lualatex"),
+                         ...) {
   expression = substitute(expression)
   if (is.null(plot) && is.null(expression)) {
     stop("Either `plot` or `expression` must be non-NULL")
@@ -10,22 +15,18 @@ smv_plot_tikz = function(plot = NULL, expression = NULL, file = "Rplots.pdf", ..
   # Create a temporary file for the tikz-output
   tmp = tempfile(tmpdir = getwd())
   # Clean up after yourself on early interrupt
-  on.exit(suppressWarnings(file.remove(tmp)), add = TRUE)
+  on.exit(unlink(tmp))
 
-  # Extract default tex usepackages and add the bm,amsmath and amssymb packages
+  # I am nor sure about what is going on here...
   opt = options()
-  on.exit(options(opt)) #Reset global options on exit
+  on.exit(options(opt), add = TRUE) #Reset global options on exit
   tikzDevice::setTikzDefaults(overwrite = FALSE)
-  tex_packages = options()$tikzLatexPackages
-  if (!any(grepl("usepackage\\{bm\\}", tex_packages))) {
-    tex_packages = c(tex_packages, "\\usepackage{bm}\n")
-  }
-  if (!any(grepl("usepackage\\{amsmath\\}", tex_packages))) {
-    tex_packages = c(tex_packages, "\\usepackage{amsmath}\n")
-  }
-  if (!any(grepl("usepackage\\{amssymb\\}", tex_packages))) {
-    tex_packages = c(tex_packages, "\\usepackage{amssymb}\n")
-  }
+
+  # Extract default tex usepackages and extra packages
+  tex_packages = c(options()$tikzLatexPackages, "\\usepackage[utf8]{inputenc}")
+  extra_packages = c(extra_packages, "bm", "amsmath", "amssymb")
+  extra_packages = paste0("\\usepackage{", extra_packages, "}\n")
+  tex_packages = unique(c(tex_packages, extra_packages))
 
   # Open a device for creating a tex-file
   tikzDevice::tikz(tmp, standAlone = TRUE, packages = tex_packages, ...)
@@ -33,7 +34,7 @@ smv_plot_tikz = function(plot = NULL, expression = NULL, file = "Rplots.pdf", ..
   current_device = dev.cur()
   on.exit({
     if (current_device %in% dev.list()) dev.off(current_device)
-  })
+  }, add = TRUE)
 
   # Plot something into the tex-file
   if (!is.null(plot)) {
@@ -50,7 +51,7 @@ smv_plot_tikz = function(plot = NULL, expression = NULL, file = "Rplots.pdf", ..
   dev.off()
 
   # Compile to pdf using lualatex
-  smv_run("lualatex", shQuote(tmp))
+  smv_run(tex_engine[1], shQuote(tmp))
 
   # Copy pdf file to final destination
   file.copy(paste0(tmp, ".pdf"), file, overwrite = TRUE)
