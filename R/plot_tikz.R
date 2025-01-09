@@ -64,3 +64,18 @@ smv_plot_tikz = function(plot = NULL,
   # Silently return a TRUE to show that the function completed successfully
   invisible(TRUE)
 }
+
+
+#' Change the axes of a map plot so it becomes possible to plot using tikzDevice
+#' @export
+smv_latex_friendly_map_plot = function(x) {
+  info = ggplot2::ggplot_build(x)$layout$panel_params[[1]]$graticule
+  east_ticks = info$degree[info$type == "E" & info$y_start == 0]
+  north_ticks = info$degree[info$type == "N" & info$x_start == 0]
+  east_labels = paste0(abs(east_ticks), "$^\\circ$", ifelse(sign(east_ticks) == 1, "E", "W"))
+  north_labels = paste0(abs(north_ticks), "$^\\circ$", ifelse(sign(north_ticks) == 1, "N", "S"))
+  x +
+    ggplot2::scale_x_continuous(breaks = east_ticks, labels = east_labels, expand = c(0, 0)) +
+    ggplot2::scale_y_continuous(breaks = north_ticks, labels = north_labels, expand = c(0, 0))
+}
+
