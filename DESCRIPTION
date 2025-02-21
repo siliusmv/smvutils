@@ -12,7 +12,8 @@ RoxygenNote: 7.3.2
 Suggests: 
     scales,
     future,
-    tikzDevice
+    tikzDevice,
+    pdftools
 Imports: 
     lobstr,
     progress
