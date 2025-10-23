@@ -54,7 +54,7 @@ smv_get_remote_func = function(server = NULL, user = NULL, ...) {
     func = function(expr) {
       expr = substitute(expr)
       envir = parent.frame()
-      remote_run(
+      smv_remote(
         expr = expr,
         user = user,
         envir = envir,
