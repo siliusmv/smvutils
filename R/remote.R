@@ -6,7 +6,7 @@
 #' their code on, to not have to retype their password every single time this function
 #' is used.
 #' @export
-smv_remote = function(expr, user, server, niceness = 10, substitute = TRUE, ...) {
+smv_remote = function(expr, user, server, substitute = TRUE, ...) {
   # The substitute argument defaults to TRUE, which means that expr is R code that can be run
   # and that must be substituted to not be evaluated early. If, however, expr has already
   # been substituted before it was given as input to this function, then substitute must
@@ -15,11 +15,7 @@ smv_remote = function(expr, user, server, niceness = 10, substitute = TRUE, ...)
   # Use the future package to connect to the server
   old_plan = future::plan(
     future::cluster,
-    workers = paste0(user, "@", server),
-    # Start the remote R process with some added niceness
-    renice = niceness,
-    # Don't assume that the remote server is organised similarly to the local system
-    homogeneous = FALSE
+    workers = paste0(user, "@", server)
   )
   # Ensure that we deconnect from the server when this function exits
   on.exit(future::plan(old_plan))

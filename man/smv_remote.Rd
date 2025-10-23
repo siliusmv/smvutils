@@ -4,7 +4,7 @@
 \alias{smv_remote}
 \title{Execute code on a remote server}
 \usage{
-smv_remote(expr, user, server, niceness = 10, substitute = TRUE, ...)
+smv_remote(expr, user, server, substitute = TRUE, ...)
 }
 \description{
 This function takes in an R-expression, a server name and a username for that server.
