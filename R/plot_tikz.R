@@ -50,7 +50,7 @@ smv_plot_tikz = function(plot = NULL,
   # Finish the creation of the tex-file
   dev.off()
 
-  # Compile to pdf using lualatex
+  # Compile to pdf using the chosen TeX compiler
   smv_run(tex_engine[1], shQuote(tmp))
 
   # Copy pdf file to final destination
